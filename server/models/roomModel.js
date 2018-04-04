@@ -1,11 +1,12 @@
 const { db } = require('../dbconfig/mongoose');
 const roomDb = db.useDb('roomInfo');
-const mongoosePaginate = require('./paginate');
+const mongoosePaginate = require('./paginate'); 
 
 // 连接room表
 const roomSchema = require('../schema/roomSchema');
 roomSchema.plugin(mongoosePaginate);
 const room = roomDb.model('room', roomSchema);
+
 
 
 /**
@@ -14,14 +15,16 @@ const room = roomDb.model('room', roomSchema);
 const returnRoomParams = `
     creator
     roomId
+    roomOrder
     direction
     roomStatus
+    status
     totalNum
     userNum
     commentNum
     creator
     createTime
-    enterTime
+    image
 `;
 
 
@@ -44,12 +47,10 @@ exports.queryRoomInfo = async params => {
         limit,
         sort,
     };
-    const searchParams = ['direction', 'roomStatus', 'creator', 'createTime', 'enterTime'];
+    const searchParams = ['roomOrder','direction', 'roomStatus', 'insertTime','status'];
     const searchRules = {};
     let starttime = '';
     let endtime = '';
-    let starttime1 = '';
-    let endtime1 = '';
     searchParams
         .map(param => {
             if (params.querys[param]) {
@@ -65,19 +66,36 @@ exports.queryRoomInfo = async params => {
             if (data) {
                 if (data.key === 'creator') {
                     searchRules[data.key] = new RegExp(data.value);
-                } else if (data.key === 'createTime') {
-                    starttime = data.value[0];
-                    endtime = data.value[1];
+                } else if (data.key === 'insertTime') {
+                    starttime = Date.parse(data.value[0])
+                    endtime = Date.parse(data.value[1])
                     searchRules['createTime'] = { $gte: starttime, $lte: endtime };
-                } else if (data.key === 'enterTime') {
-                    starttime1 = data.value[0];
-                    endtime1 = data.value[1];
-                    searchRules['createTime'] = { $gte: starttime1, $lte: endtime1 };
-                } {
+                }  {
                     searchRules[data.key] = data.value;
                 }
             }
         });
     const roomInfo = await room.paginate(searchRules, roomParams);
     return roomInfo;
+};
+
+
+/**
+ * 修改房间状态
+ * @param {*} params
+ */
+
+exports.changeRoomStatus = async roomInfo => {
+    let roomOrder = roomInfo.roomOrder;
+    let status = roomInfo.status;
+    const conditions = { roomOrder: roomOrder };
+    const update = { $set: { status: status } };
+    const options = { upsert: true };
+    const changeStatusRes = await room.update(conditions, update, options);
+    const changeNewRoom = await room.find({ roomOrder: roomOrder })
+    let roomresult = {
+        changeStatusRes: changeStatusRes,
+        changeNewRoom: changeNewRoom
+    }
+    return roomresult;
 };

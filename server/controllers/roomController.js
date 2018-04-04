@@ -34,3 +34,35 @@ exports.queryRoomInfo = async (ctx, next) => {
     }
 };
 
+/**
+ * 修改房间状态接口
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.changeRoomStatus = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let RoomInfo = {
+            roomOrder: body.roomOrder,
+            status: body.status,
+        };
+        let changeRoomsRes = await roomModel.changeRoomStatus(RoomInfo);
+        if (changeRoomsRes.changeStatusRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 1,
+            };
+            exportConfig(ctx, 'changeRoomSuccess', returnObj);
+        } else {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'changeRoomFail', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};

@@ -8,10 +8,30 @@ const userSchema = require('../schema/userSchema');
 userSchema.plugin(mongoosePaginate);
 const user = userDb.model('user', userSchema);
 
+// 链接 users 表
+const usersSchema = require('../schema/usersSchema');
+usersSchema.plugin(mongoosePaginate);
+const users = userDb.model('users', usersSchema);
+
 const returnUserParams = `
     uid
     username
     roles
+`;
+const returnUsersParams = `
+        uid
+        name
+        email
+        avatar
+        registerTime
+        checkInTime
+        sex
+        age
+        roomId
+        userType
+        fanilyAddress
+        familyName
+        familyPhone   
 `;
 /**
  * 注册
@@ -88,7 +108,6 @@ exports.queryAllUser = async params => {
                 }
             }
         });
-    console.log(searchRules);
     const userInfo = await user.paginate(searchRules, userParams);
     return userInfo;
 };
@@ -121,4 +140,57 @@ exports.checkUserExist = async username => {
 exports.delManager = async uid => {
     const removeRes = await user.remove({ 'uid': uid });
     return removeRes;
+}
+
+
+
+/**
+ * 查询用户
+ * 
+ */
+exports.queryAllUsers = async params => {
+    const page = Number(params.pagination.current);
+    const limit = Number(params.pagination.pageSize);
+    let sort = {};
+    if (params.sort && params.sort.key) {
+        sort = {
+            [params.sort.key]: params.sort.order == 'ascend' ? 1 : -1,
+        };
+    };
+    let usersParams = {
+        select: returnUsersParams,
+        page,
+        limit,
+        sort
+    };
+    const searchParams = ['name', 'uid','roomId','userType','checkInTime']
+    const searchRules = {};
+    let starttime = '';
+    let endtime = ''
+    searchParams
+        .map(param => {
+            if (params.querys[param]) {
+                return {
+                    key: param,
+                    value: params.querys[param],
+                };
+            } else {
+                return null;
+            }
+        })
+        .forEach(data => {
+            if (data) {
+                if (data.key === 'name') {
+                    searchRules[data.key] = new RegExp(data.value);
+                } else if (data.key === 'checkInTime') {
+                    starttime = Date.parse(data.value[0])
+                    endtime = Date.parse(data.value[1])
+                    searchRules['checkInTime'] = { $gte: starttime, $lte: endtime };
+                } else {
+                    searchRules[data.key] = data.value;
+                }
+            }
+        });
+        const usersInfo = await users.paginate(searchRules, usersParams);
+        return usersInfo;
 }

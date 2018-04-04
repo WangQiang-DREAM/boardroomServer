@@ -7,11 +7,11 @@ const codeConfig = {
         code: 500,
         message: '系统错误',
     },
-    changeTagSuccess: {
+    changeRoomSuccess: {
         code: 0,
         message: '修改成功',
     },
-    changeTagFail: {
+    changeRoomFail: {
         code: 500,
         message: '修改失败',
     },

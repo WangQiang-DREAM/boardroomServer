@@ -139,3 +139,33 @@ exports.delManager = async (ctx, next) => {
         console.log(error);
     }
 }
+
+/**
+ * 查询用户
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.queryAllUsers = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let userInfo = await userModel.queryAllUsers(body);
+        let user = {
+            docs: userInfo.docs,
+            pagination: {
+                total: userInfo.total,
+                pageSize: userInfo.limit,
+                current: userInfo.page,
+            },
+        };
+        if (userInfo.total) {
+            exportConfig(ctx, 'success', user);
+        } else {
+            exportConfig(ctx, 'error', user);
+        }
+        return next;
+    } catch (error) {
+        exportConfig(ctx, 'error', {});
+        console.log(error);
+    }
+};

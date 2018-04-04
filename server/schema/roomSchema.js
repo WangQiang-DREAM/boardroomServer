@@ -4,13 +4,14 @@ const roomSchema = new Schema(
     {
         roomId: { type: String },
         creator: { type: String },
-        createTime: { type: Number },
         direction: { type: String },
-        roomStatus: { type: Number },
+        roomStatus: { type: String },
         userNum: { type: Number },
         totalNum: { type: Number },
         commentNum: { type: Number },
-        enterTime: {type: Number},
+        status: { type: String},
+        roomOrder:{type: Number},
+        createTime: { type: Number },
     },
     {
         collection: 'roomInfos',
