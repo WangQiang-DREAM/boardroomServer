@@ -118,13 +118,17 @@ exports.queryAllUser = async params => {
  * @param {*} username
  * @param {*} roles
  */
-exports.addManager = async (username, roles) => {
+exports.addManager = async (username,name, roles) => {
     const newManager = new user({
         uid: uuid(),
         username: username,
+        name:name,
+        photo: 'http://localhost:8080/manager/avatar2.jpeg',
         password: '1234',
         roles: [roles],
     });
+    console.log(12)
+    console.log(newManager)
     const saveRes = await newManager.save();
     return saveRes;
 };

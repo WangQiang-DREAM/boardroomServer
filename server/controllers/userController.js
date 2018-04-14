@@ -101,6 +101,7 @@ exports.addManager = async (ctx, next) => {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
         let userName = body.username;
+        let name = body.name;
         let roles = parseInt(body.roles);
         // 先检查是否已经添加
         let checkExist = await userModel.checkUserExist(userName);
@@ -109,7 +110,7 @@ exports.addManager = async (ctx, next) => {
             exportConfig(ctx, 'managerExist', { code: 1, msg: '管理员已经存在, 无需再添加' });
         } else {
             if (roles && userName) {
-                let saveRes = await userModel.addManager(userName, roles);
+                let saveRes = await userModel.addManager(userName, name, roles);
                 exportConfig(ctx, 'addManagerSuccess', { code: 0, addNew: saveRes });
             } else {
                 exportConfig(ctx, 'addManagerError', { code: 500 });
