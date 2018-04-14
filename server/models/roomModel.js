@@ -99,3 +99,43 @@ exports.changeRoomStatus = async roomInfo => {
     }
     return roomresult;
 };
+
+/**
+ * 查询房间图片
+ */
+ exports.queryRoomImgByRoomOrder = roomOrder => {
+     let resImg = room.findOne({roomOrder:roomOrder});
+     return resImg;
+ }
+
+/**
+* 上传房间图片
+* @param {*} param
+*/
+exports.changeRoomPhoto = async param => {
+    console.log(param)
+    const conditions = { roomOrder: param.roomOrder};
+    const update = { $set: { image: param.img } };
+    const options = { upsert: true };
+    const resImg = await room.update(conditions, update, options);
+    return resImg
+}
+
+/**
+* 删除房间图片
+* @param {*} param
+*/
+exports.deleteRoomPhoto = async param => {
+    console.log(param)
+    let img = []
+    if (param.image != null){
+        img = (param.image).split(',')
+    } else {
+        img = null
+    }
+    const conditions = { roomOrder: param.roomOrder };
+    const update = { $set: { image: img } };
+    const options = { upsert: false };
+    const resImg = await room.update(conditions, update, options);
+    return resImg
+}

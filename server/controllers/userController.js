@@ -161,7 +161,7 @@ exports.queryAllUsers = async (ctx, next) => {
         if (userInfo.total) {
             exportConfig(ctx, 'success', user);
         } else {
-            exportConfig(ctx, 'error', user);
+            exportConfig(ctx, 'queryUserError', user);
         }
         return next;
     } catch (error) {

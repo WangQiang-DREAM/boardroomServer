@@ -5,8 +5,10 @@ const fs = require('fs');
 const roomModel = require('../models/roomModel');
 const exportConfig = require('../../config/exportConfig');
 
+
+
 /**
- * 返回视频所有信息接口
+ * 返回房间所有信息接口
  * @param {*} ctx
  * @param {*} next
  */
@@ -66,3 +68,81 @@ exports.changeRoomStatus = async (ctx, next) => {
         console.log(error);
     }
 };
+
+/**
+ * 添加房间信息接口
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.addRoomInfo = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        console.log(body)
+    } catch (error) {
+        exportConfig(ctx, 'error', { code: 500 });
+        console.log(error);
+    }
+};
+
+//上传房间图片
+exports.changeRoomPhoto = async (params,imgname) => {
+    let img = []
+    if (params.image.length > 1 ) {
+        img = (params.image).split(',');
+        let newUrl = 'http://localhost:8080/house/' + imgname;
+        img.push(newUrl);
+    } else {
+        let newUrl = 'http://localhost:8080/house/' + imgname;
+        img.push(newUrl);
+    }
+        
+    let param = {
+        img: img,
+        roomOrder: params.roomOrder,
+    }
+    let changeRes = await roomModel.changeRoomPhoto(param);
+    return changeRes
+}
+
+//删除房间图片
+exports.deleteRoomPhoto = async (ctx, next) => {
+    let bodystring = ctx.request.query.body;
+    let body = util.parseJson(bodystring);
+    let changeRes = await roomModel.deleteRoomPhoto(body);
+    let resImg = {
+        status: '删除成功',
+        data: changeRes
+    }
+    if (changeRes.ok == 1) {
+        exportConfig(ctx, 'success', resImg);
+    } else {
+        exportConfig(ctx, 'error', changeRes);
+    }
+    return next;
+}
+
+
+//查询房间图片
+exports.queryRoomImgByRoomOrder = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let resImg = await roomModel.queryRoomImgByRoomOrder(body.roomOrder);
+        let RoomImg = {
+            docs: resImg
+        };
+        if (resImg) {
+            exportConfig(ctx, 'success', RoomImg);
+        } else {
+            exportConfig(ctx, 'error', RoomImg);
+        }
+        return next;
+    } catch (error) {
+        exportConfig(ctx, 'error', { code: 500 });
+        console.log(error);
+    }
+};
+
+
+

@@ -26,8 +26,9 @@ const returnUsersParams = `
         registerTime
         checkInTime
         sex
+        bedId
         age
-        roomId
+        roomOrder
         userType
         fanilyAddress
         familyName
@@ -163,7 +164,7 @@ exports.queryAllUsers = async params => {
         limit,
         sort
     };
-    const searchParams = ['name', 'uid','roomId','userType','checkInTime']
+    const searchParams = ['name', 'uid','roomOrder','userType','checkInTime']
     const searchRules = {};
     let starttime = '';
     let endtime = ''

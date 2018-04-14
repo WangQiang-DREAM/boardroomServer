@@ -11,7 +11,7 @@ const tagsManagerSchema = new Schema(
         checkInTime: {type: Number},
         sex:{type:Number},
         age:{type:Number},
-        roomId:{type:Number},
+        roomOrder:{type:Number},
         userType:{type:String}
     },
     {
