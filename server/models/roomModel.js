@@ -7,7 +7,7 @@ const roomSchema = require('../schema/roomSchema');
 roomSchema.plugin(mongoosePaginate);
 const room = roomDb.model('room', roomSchema);
 
-
+const uuid = require('uuid');
 
 /**
  * 定义标签视频表返回字段
@@ -47,13 +47,15 @@ exports.queryRoomInfo = async params => {
         limit,
         sort,
     };
-    const searchParams = ['roomOrder','direction', 'roomStatus', 'insertTime','status'];
+    const searchParams = ['roomOrder','direction', 'roomStatus', 'createTime','status'];
     const searchRules = {};
     let starttime = '';
     let endtime = '';
     searchParams
         .map(param => {
             if (params.querys[param]) {
+                console.log(11)
+                console.log(params.querys[param])
                 return {
                     key: param,
                     value: params.querys[param],
@@ -66,11 +68,11 @@ exports.queryRoomInfo = async params => {
             if (data) {
                 if (data.key === 'creator') {
                     searchRules[data.key] = new RegExp(data.value);
-                } else if (data.key === 'insertTime') {
+                } else if (data.key === 'createTime') {
                     starttime = Date.parse(data.value[0])
                     endtime = Date.parse(data.value[1])
-                    searchRules['createTime'] = { $gte: starttime, $lte: endtime };
-                }  {
+                    searchRules[data.key] = { $gte: starttime, $lte: endtime };
+                } else {
                     searchRules[data.key] = data.value;
                 }
             }
@@ -138,4 +140,32 @@ exports.deleteRoomPhoto = async param => {
     const options = { upsert: false };
     const resImg = await room.update(conditions, update, options);
     return resImg
+}
+
+/**
+* 添加房间信息
+* @param {*} param
+*/
+exports.addRoomInfo = async param => {
+    const newRoom = new room({
+        roomOrder: param.roomOrder,
+        direction: param.direction,
+        totalNum: param.totalNum,
+        creator: param.creator,
+        status: param.status,
+        roomStatus: '0',
+        roomId: uuid(),
+        createTime: Date.parse(new Date()),
+        userNum: 0,
+        commentNum:0,
+        image:null
+    });
+    const saveRes = await newRoom.save();
+    return saveRes;
+}
+
+// 检查房间是否存在
+exports.checkRoomExist = async roomOrder => {
+    const checkRoomExist = await room.find({ 'roomOrder': roomOrder });
+    return checkRoomExist;
 }

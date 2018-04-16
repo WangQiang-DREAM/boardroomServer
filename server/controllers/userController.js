@@ -170,3 +170,34 @@ exports.queryAllUsers = async (ctx, next) => {
         console.log(error);
     }
 };
+
+
+/**
+ * 查询评论
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.queryComments = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let commentsInfo = await userModel.queryComments(body)
+        let comments = {
+            docs: commentsInfo.docs,
+            pagination: {
+                total: commentsInfo.total,
+                pageSize: commentsInfo.limit,
+                current: commentsInfo.page,
+            },
+        };
+        if (commentsInfo.total) {
+            exportConfig(ctx, 'success', comments);
+        } else {
+            exportConfig(ctx, 'error', comments);
+        }
+        return next;
+    } catch (error) {
+        exportConfig(ctx, 'error', {});
+        console.log(error);
+    }
+};

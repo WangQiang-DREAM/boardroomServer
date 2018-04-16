@@ -63,6 +63,10 @@ const codeConfig = {
         code: 0,
         message: '管理员已经存在',
     },
+    roomExist: {
+        code: 0,
+        message: '房间号已经存在',
+    },
     delManagerSuccess: {
         code: 0,
         message: '删除管理员成功',

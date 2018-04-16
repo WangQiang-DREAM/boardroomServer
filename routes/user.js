@@ -32,4 +32,9 @@ router.get('/delManager', userController.delManager);
  */
 router.get('/queryAllUsers', userController.queryAllUsers);
 
+/**
+ * 分页返回所有评论信息
+ */
+router.get('/queryComments', userController.queryComments);
+
 module.exports = router;

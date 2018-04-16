@@ -90,6 +90,7 @@ exports.queryVideoInfo = async params => {
                     starttime = data.value[0];
                     endtime = data.value[1];
                     searchRules['modifyTime'] = { $gte: starttime, $lte: endtime };
+                   
                 } else if (data.key === 'tags' && data.value === '空标签') {
                     searchRules[data.key] = { $size: 0 };
                 } else if (data.key === 'musicInfo') {

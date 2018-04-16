@@ -13,10 +13,17 @@ const usersSchema = require('../schema/usersSchema');
 usersSchema.plugin(mongoosePaginate);
 const users = userDb.model('users', usersSchema);
 
+// 链接 comments 表
+const commentsSchema = require('../schema/commentsSchema');
+commentsSchema.plugin(mongoosePaginate);
+const comments = userDb.model('comments', commentsSchema);
+
+
 const returnUserParams = `
     uid
     username
     roles
+    name
 `;
 const returnUsersParams = `
         uid
@@ -196,6 +203,49 @@ exports.queryAllUsers = async params => {
                 }
             }
         });
+        console.log(searchRules)
         const usersInfo = await users.paginate(searchRules, usersParams);
         return usersInfo;
+}
+
+/**
+ * 查询评论
+ * 
+ */
+exports.queryComments = async params => {
+    console.log(78)
+    console.log(params)
+    const page = Number(params.pagination.current);
+    const limit = Number(params.pagination.pageSize);
+    let sort = {};
+    if (params.sort && params.sort.key) {
+        sort = {
+            [params.sort.key]: params.sort.order == 'ascend' ? 1 : -1,
+        };
+    };
+    let commentsParams = {
+        page,
+        limit,
+        sort
+    };
+    const searchParams = ['uid', 'roomOrder']
+    const searchRules = {};
+    searchParams
+        .map(param => {
+            if (params.querys[param]) {
+                return {
+                    key: param,
+                    value: params.querys[param],
+                };
+            } else {
+                return null;
+            }
+        })
+        .forEach(data => {
+            if (data) {
+                searchRules[data.key] = data.value;
+            }
+        });
+    const commentsInfo = await comments.paginate(searchRules, commentsParams);
+    return commentsInfo;
 }
