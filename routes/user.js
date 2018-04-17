@@ -37,4 +37,9 @@ router.get('/queryAllUsers', userController.queryAllUsers);
  */
 router.get('/queryComments', userController.queryComments);
 
+/**
+ * 修改管理员密码
+ */
+router.get('/updateManagerPassword', userController.updateManagerPassword)
+
 module.exports = router;

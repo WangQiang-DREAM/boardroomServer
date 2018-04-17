@@ -131,7 +131,7 @@ exports.addManager = async (username,name, roles) => {
         username: username,
         name:name,
         photo: 'http://localhost:8080/manager/avatar2.jpeg',
-        password: '1234',
+        password: '81dc9bdb52d04dc20036dbd8313ed055',
         roles: [roles],
     });
     console.log(12)
@@ -249,3 +249,18 @@ exports.queryComments = async params => {
     const commentsInfo = await comments.paginate(searchRules, commentsParams);
     return commentsInfo;
 }
+
+/**
+ * 修改管理员密码
+ * @param {*} params
+ */
+
+exports.updateManagerPassword = async managerInfo => {
+    let uid = managerInfo.uid;
+    let password = managerInfo.password;
+    const conditions = { uid: uid };
+    const update = { $set: { password: password } };
+    const options = { upsert: true };
+    const changeRes = await user.update(conditions, update, options);
+    return changeRes;
+};

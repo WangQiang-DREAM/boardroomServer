@@ -201,3 +201,32 @@ exports.queryComments = async (ctx, next) => {
         console.log(error);
     }
 };
+
+//修改管理员密码
+exports.updateManagerPassword = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let ManagerInfo = {
+            uid: body.uid,
+            password: body.password,
+        };
+        let changeManagerRes = await userModel.updateManagerPassword(ManagerInfo);
+        if (changeManagerRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeManagerRes,
+                ok: 1,
+            };
+            exportConfig(ctx, 'success', returnObj);
+        } else {
+            let returnObj = {
+                dbResult: changeManagerRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'error', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
