@@ -3,12 +3,10 @@ const util = require('../util');
 const exportConfig = require('../../config/exportConfig');
 
 /**
- * 登录
+ * 管理员登录
  * @param {*} ctx
  * @param {*} next
  */
-
-
 exports.loginIn = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
@@ -122,6 +120,11 @@ exports.addManager = async (ctx, next) => {
     }
 };
 
+/**
+ * 删除管理员
+ * @param {*} ctx
+ * @param {*} next
+ */
 exports.delManager = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
@@ -141,6 +144,38 @@ exports.delManager = async (ctx, next) => {
     }
 }
 
+/**
+ * 修改管理员密码
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.updateManagerPassword = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let ManagerInfo = {
+            uid: body.uid,
+            password: body.password,
+        };
+        let changeManagerRes = await userModel.updateManagerPassword(ManagerInfo);
+        if (changeManagerRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeManagerRes,
+                ok: 1,
+            };
+            exportConfig(ctx, 'success', returnObj);
+        } else {
+            let returnObj = {
+                dbResult: changeManagerRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'error', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
 /**
  * 查询用户
  * @param {*} ctx
@@ -201,26 +236,30 @@ exports.queryComments = async (ctx, next) => {
         console.log(error);
     }
 };
-
-//修改管理员密码
-exports.updateManagerPassword = async (ctx, next) => {
+ 
+/**
+ * 变更用户类型
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.updateUserType = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
-        let ManagerInfo = {
+        let typeInfo = {
             uid: body.uid,
-            password: body.password,
+            userType: body.userType,
         };
-        let changeManagerRes = await userModel.updateManagerPassword(ManagerInfo);
-        if (changeManagerRes.ok === 1) {
+        let changeRes = await userModel.updateUserType(typeInfo);
+        if (changeRes.ok === 1) {
             let returnObj = {
-                dbResult: changeManagerRes,
+                dbResult: changeRes,
                 ok: 1,
             };
             exportConfig(ctx, 'success', returnObj);
         } else {
             let returnObj = {
-                dbResult: changeManagerRes,
+                dbResult: changeRes,
                 ok: 0,
             };
             exportConfig(ctx, 'error', returnObj);

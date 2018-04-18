@@ -18,6 +18,15 @@ router.get('/queryRoomImgByRoomOrder',roomController.queryRoomImgByRoomOrder)
 //删除房间图片
 router.get('/deleteRoomPhoto', roomController.deleteRoomPhoto)
 
+//修改房间情况
+router.get('/change_RoomStatus', roomController.change_RoomStatus)
+
+//修改房间入住人数
+router.get('/changeRoomUserNum', roomController.changeRoomUserNum)
+
+//修改房间评论数
+router.get('/changeRoomCommentNum', roomController.changeRoomCommentNum)
+
 
 /**
  * 上传图片

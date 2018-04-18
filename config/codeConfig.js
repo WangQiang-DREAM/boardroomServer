@@ -15,6 +15,10 @@ const codeConfig = {
         code: 500,
         message: '修改失败',
     },
+    changeRoomStatusFail: {
+        code: 0,
+        message: '未找到该房间',
+    },
     login: {
         code: 201,
         message: '登录成功',

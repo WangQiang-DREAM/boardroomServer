@@ -10,7 +10,7 @@ const room = roomDb.model('room', roomSchema);
 const uuid = require('uuid');
 
 /**
- * 定义标签视频表返回字段
+ * 定义房间表返回字段
  */
 const returnRoomParams = `
     creator
@@ -115,7 +115,6 @@ exports.changeRoomStatus = async roomInfo => {
 * @param {*} param
 */
 exports.changeRoomPhoto = async param => {
-    console.log(param)
     const conditions = { roomOrder: param.roomOrder};
     const update = { $set: { image: param.img } };
     const options = { upsert: true };
@@ -128,7 +127,6 @@ exports.changeRoomPhoto = async param => {
 * @param {*} param
 */
 exports.deleteRoomPhoto = async param => {
-    console.log(param)
     let img = []
     if (param.image != null){
         img = (param.image).split(',')
@@ -164,8 +162,52 @@ exports.addRoomInfo = async param => {
     return saveRes;
 }
 
-// 检查房间是否存在
+/**
+ * 查询房间号是否存在/返回房间具体信息
+ */
 exports.checkRoomExist = async roomOrder => {
     const checkRoomExist = await room.find({ 'roomOrder': roomOrder });
     return checkRoomExist;
 }
+
+/**
+* 房间入住人数变更
+* @param {*} param
+*/
+exports.changeRoomUserNum = async param => {
+    let roomOrder = param.roomOrder;
+    let inc = param.inc;
+    const conditions = { roomOrder: roomOrder };
+    const update = { $inc: { userNum: inc } };
+    const options = { upsert: true };
+    const changeRes = await room.update(conditions, update, options);
+    return changeRes;
+}
+
+/**
+ * 修改房间情况
+ * @param {*} param
+ */
+exports.change_RoomStatus = async param => {
+    let roomOrder = param.roomOrder;
+    let roomStatus = param.roomStatus;
+    const conditions = { roomOrder: roomOrder };
+    const update = { $set: { roomStatus: roomStatus } };
+    const options = { upsert: true };
+    const changeRes = await room.update(conditions, update, options);
+    return changeRes;
+};
+
+/**
+ * 修改房间评论数
+ * @param {*} param
+ */
+exports.changeRoomCommentNum = async param => {
+    let roomOrder = param.roomOrder;
+    let commentNum = param.commentNum;
+    const conditions = { roomOrder: roomOrder };
+    const update = { $inc: { commentNum: commentNum } };
+    const options = { upsert: true };
+    const changeRes = await room.update(conditions, update, options);
+    return changeRes;
+};

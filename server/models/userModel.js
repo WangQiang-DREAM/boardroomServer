@@ -37,7 +37,7 @@ const returnUsersParams = `
         age
         roomOrder
         userType
-        fanilyAddress
+        familyAddress
         familyName
         familyPhone   
 `;
@@ -51,7 +51,7 @@ exports.register = async username => {
 };
 
 /**
- * 登录
+ * 管理员登录
  * @param {*} email
  */
 exports.loginIncheck = async username => {
@@ -154,7 +154,20 @@ exports.delManager = async uid => {
     return removeRes;
 }
 
+/**
+ * 修改管理员密码
+ * @param {*} params
+ */
 
+exports.updateManagerPassword = async managerInfo => {
+    let uid = managerInfo.uid;
+    let password = managerInfo.password;
+    const conditions = { uid: uid };
+    const update = { $set: { password: password } };
+    const options = { upsert: true };
+    const changeRes = await user.update(conditions, update, options);
+    return changeRes;
+};
 
 /**
  * 查询用户
@@ -203,10 +216,26 @@ exports.queryAllUsers = async params => {
                 }
             }
         });
-        console.log(searchRules)
         const usersInfo = await users.paginate(searchRules, usersParams);
         return usersInfo;
 }
+
+
+/**
+ * 变更用户类型
+ * @param {*} param
+ */
+
+exports.updateUserType = async param => {
+    let uid = param.uid;
+    let userType = param.userType;
+    const conditions = { uid: uid };
+    const update = { $set: { userType: userType } };
+    const options = { upsert: true };
+    const changeRes = await users.update(conditions, update, options);
+    return changeRes;
+};
+
 
 /**
  * 查询评论
@@ -250,17 +279,5 @@ exports.queryComments = async params => {
     return commentsInfo;
 }
 
-/**
- * 修改管理员密码
- * @param {*} params
- */
 
-exports.updateManagerPassword = async managerInfo => {
-    let uid = managerInfo.uid;
-    let password = managerInfo.password;
-    const conditions = { uid: uid };
-    const update = { $set: { password: password } };
-    const options = { upsert: true };
-    const changeRes = await user.update(conditions, update, options);
-    return changeRes;
-};
+

@@ -151,5 +151,123 @@ exports.queryRoomImgByRoomOrder = async (ctx, next) => {
     }
 };
 
+/**
+ * 修改房间入住人数接口
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.changeRoomUserNum = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let RoomInfo = {
+            roomOrder: body.roomOrder,
+            inc: body.inc,
+        };
+        let changeRoomsRes = await roomModel.changeRoomUserNum(RoomInfo);
+        if (changeRoomsRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 1,
+            };
+            //根据返回值更改房间情况
+            let roomRes = await roomModel.checkRoomExist(body.roomOrder);
+            if (roomRes) {
+                let userNum = roomRes[0].userNum;
+                let totalNum = roomRes[0].totalNum;
+                let normalRoomInfo = {
+                    roomOrder: body.roomOrder,
+                    roomStatus: '0',
+                };
+                let fullRoomInfo = {
+                    roomOrder: body.roomOrder,
+                    roomStatus: '1',
+                };
+                if (userNum < totalNum) {
+                    let changeRoomStatusRes = await roomModel.change_RoomStatus(normalRoomInfo);
+                    changeRoomStatusRes.ok == 1 ? exportConfig(ctx, 'changeRoomSuccess', returnObj) : exportConfig(ctx, 'changeRoomFail')
+                } else {
+                    let changeRoomStatusRes = await roomModel.change_RoomStatus(fullRoomInfo);
+                    changeRoomStatusRes.ok == 1 ? exportConfig(ctx, 'changeRoomSuccess', returnObj) : exportConfig(ctx, 'changeRoomFail')
+                }
+            } else {
+                exportConfig(ctx, 'changeRoomStatusFail')
+            }
+        } else {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'changeRoomFail', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
+/**
+ * 修改房间评论数接口
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.changeRoomCommentNum = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let RoomInfo = {
+            roomOrder: body.roomOrder,
+            commentNum: body.commentNum,
+        };
+        let changeRoomsRes = await roomModel.changeRoomCommentNum(RoomInfo);
+        if (changeRoomsRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 1,
+            };
+            exportConfig(ctx, 'changeRoomSuccess', returnObj);
+        } else {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'changeRoomFail', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
+/**
+ * 修改房间情况接口
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.change_RoomStatus = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let RoomInfo = {
+            roomOrder: body.roomOrder,
+            roomStatus: body.roomStatus,
+        };
+        let changeRoomsRes = await roomModel.change_RoomStatus(RoomInfo);
+        if (changeRoomsRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 1,
+            };
+            exportConfig(ctx, 'changeRoomSuccess', returnObj);
+        } else {
+            let returnObj = {
+                dbResult: changeRoomsRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'changeRoomFail', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
