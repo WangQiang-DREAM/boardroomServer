@@ -4,7 +4,7 @@ const readline = require('readline');
 const fs = require('fs');
 const roomModel = require('../models/roomModel');
 const exportConfig = require('../../config/exportConfig');
-
+const sendEmail = require('../mail')
 
 
 /**
@@ -186,6 +186,7 @@ exports.changeRoomUserNum = async (ctx, next) => {
                 if (userNum < totalNum) {
                     let changeRoomStatusRes = await roomModel.change_RoomStatus(normalRoomInfo);
                     changeRoomStatusRes.ok == 1 ? exportConfig(ctx, 'changeRoomSuccess', returnObj) : exportConfig(ctx, 'changeRoomFail')
+                    //sendEmail('826011374@qq.com', '退订成功！', '您已退订')
                 } else {
                     let changeRoomStatusRes = await roomModel.change_RoomStatus(fullRoomInfo);
                     changeRoomStatusRes.ok == 1 ? exportConfig(ctx, 'changeRoomSuccess', returnObj) : exportConfig(ctx, 'changeRoomFail')

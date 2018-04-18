@@ -1,7 +1,7 @@
 const userModel = require('../models/userModel');
 const util = require('../util');
 const exportConfig = require('../../config/exportConfig');
-
+const sendEmail = require('../mail')
 /**
  * 管理员登录
  * @param {*} ctx
@@ -257,6 +257,9 @@ exports.updateUserType = async (ctx, next) => {
                 ok: 1,
             };
             exportConfig(ctx, 'success', returnObj);
+            if (body.userType == '1') {
+                sendEmail(body.email, '退订成功！', '您已退订')
+            }
         } else {
             let returnObj = {
                 dbResult: changeRes,
