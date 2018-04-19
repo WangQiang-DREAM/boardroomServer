@@ -17,7 +17,6 @@ exports.loginIn = async (ctx, next) => {
         if (loginRescheck.length) {
             let loginRes = await userModel.loginIn(username, password);
             if (loginRes != null) {
-                console.log(loginRes)
                 exportConfig(ctx, 'login', loginRes);
             } else {
                 exportConfig(ctx, 'passwordError', loginRes);
