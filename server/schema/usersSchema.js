@@ -12,7 +12,12 @@ const tagsManagerSchema = new Schema(
         sex:{type:Number},
         age:{type:Number},
         roomOrder:{type:Number},
-        userType:{type:String}
+        bedId: { type: Number },
+        userType:{type:String},
+        familyName: { type: String },
+        familyAddress: { type: String },
+        familyPhone: { type: Number },
+        idCardNum: { type: String },
     },
     {
         collection: 'users',

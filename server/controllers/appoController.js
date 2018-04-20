@@ -59,7 +59,16 @@ exports.changeAppoStatus = async (ctx, next) => {
             switch (emailStatus) {
                 case 'reject':
                 sendEmail(body.email, '预约结果', '很抱歉，您的预约已被拒绝，请再次预约！')
-                break
+                break;
+                case 'receive':
+                sendEmail(body.email, '预约结果', '您的预约已成功，请及时前往！')
+                break;
+                case 'checkin':
+                sendEmail(body.email, '入住通知', '您已成功入住' + body.roomOrder + '房间' + body.bedId + '号床')
+                break;
+                case 'nocheckin':
+                sendEmail(body.email, '预约结果', '您已取消入住！')
+                break;
             }
         } else {
             let returnObj = {

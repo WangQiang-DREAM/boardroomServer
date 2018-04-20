@@ -271,3 +271,49 @@ exports.updateUserType = async (ctx, next) => {
         console.log(error);
     }
 };
+
+/**
+ * 变更用户信息
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.updateUserInfo = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let userInfo = {
+            uid: body.uid,
+            name: body.name,
+            checkInTime:Date.parse(new Date),
+            userType: body.userType,
+            age: body.age,
+            sex: body.sex,
+            roomOrder:body.roomOrder,
+            bedId:body.bedId,
+            familyName: body.familyName,
+            familyAddress: body.familyAddress,
+            familyPhone: body.familyPhone,
+            idCardNum: body.idCardNum,
+        };
+        let changeRes = await userModel.updateUserInfo(userInfo);
+        if (changeRes.ok === 1) {
+            let returnObj = {
+                dbResult: changeRes,
+                ok: 1,
+            };
+            exportConfig(ctx, 'success', returnObj);
+            // if (body.userType == '1') {
+            //     sendEmail(body.email, '退订成功！', '您已退订')
+            // }
+        } else {
+            let returnObj = {
+                dbResult: changeRes,
+                ok: 0,
+            };
+            exportConfig(ctx, 'error', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};

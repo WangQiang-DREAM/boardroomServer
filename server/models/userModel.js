@@ -281,3 +281,28 @@ exports.queryComments = async params => {
 
 
 
+/**
+ * 变更用户信息
+ * @param {*} param
+ */
+
+exports.updateUserInfo = async param => {
+    let uid = param.uid;
+    const conditions = { uid: uid };
+    const update = { $set: {
+        userType: param.userType,
+        name: param.name,
+        checkInTime:param.checkInTime,
+        age: param.age,
+        sex: param.sex,
+        roomOrder: param.roomOrder,
+        bedId: param.bedId,
+        familyName: param.familyName,
+        familyAddress: param.familyAddress,
+        familyPhone: param.familyPhone,
+        idCardNum: param.idCardNum,
+        } };
+    const options = { upsert: true };
+    const changeRes = await users.update(conditions, update, options);
+    return changeRes;
+};

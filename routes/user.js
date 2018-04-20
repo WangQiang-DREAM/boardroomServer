@@ -39,6 +39,7 @@ router.get('/queryAllUsers', userController.queryAllUsers);
  */
 router.get('/updateUserType', userController.updateUserType);
 
+router.get('/updateUserInfo', userController.updateUserInfo)
 /**
  * 分页返回所有评论信息
  */
