@@ -21,6 +21,8 @@ const returnAppoParams = `
     receptionist
     status
     email
+    operater
+    operaTime
 `
 /**
  * 根据搜索条件返回预约的所有信息

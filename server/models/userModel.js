@@ -3,7 +3,7 @@ const userDb = db.useDb('user');
 const mongoosePaginate = require('./paginate');
 const uuid = require('uuid');
 
-// 连接tagsManager表
+// 连接Manager表
 const userSchema = require('../schema/userSchema');
 userSchema.plugin(mongoosePaginate);
 const user = userDb.model('user', userSchema);
@@ -18,7 +18,10 @@ const commentsSchema = require('../schema/commentsSchema');
 commentsSchema.plugin(mongoosePaginate);
 const comments = userDb.model('comments', commentsSchema);
 
-
+//连接uid表
+const uidSchema = require('../schema/uidSchema');
+uidSchema.plugin(mongoosePaginate);
+const uid = userDb.model('uid', uidSchema);
 const returnUserParams = `
     uid
     username
@@ -306,3 +309,65 @@ exports.updateUserInfo = async param => {
     const changeRes = await users.update(conditions, update, options);
     return changeRes;
 };
+
+/**
+ * 新用户注册
+ * @param {*} param
+ */
+
+exports.newUserRegister = async param => {
+    const newUser = new users({
+        uid: param.uid,
+        email: param.email,
+        phone: param.phone,
+        password: param.password,
+        avatar: "http://localhost:8080/user/default.jpg",
+        name: null,
+        registerTime: Date.parse(new Date()),
+        checkInTime: null,
+        sex: null,
+        age: null,
+        roomOrder: null,
+        bedId: 1,
+        userType: "1",
+        familyAddress: "1",
+        familyName: "1",
+        familyPhone: 1,
+        idCardNum: "1"
+    });
+    const saveRes = await newUser.save();
+    return saveRes;
+};
+
+/**
+ * 用户登录
+ * @param {*} param
+ */
+exports.usersLogin = async param => {
+    console.log(param)
+    let loginResult = {};
+    if (param.type == '1') {
+       loginResult = users.findOne({ 'email': param.email, 'password': param.password });
+    } else {
+        loginResult = users.findOne({ 'phone': param.phone});
+    }
+    return loginResult;
+};
+
+//查询uid
+exports.queryUid = async param => {
+    const res = await uid.find()
+    return res[0]
+}
+//更改uid
+exports.changeUid = async param => {
+    const conditions = { _id: param };
+    const update = {
+        $inc: {
+           uid:1
+        }
+    };
+    const options = { upsert: false };
+    const changeRes = await uid.update(conditions, update, options);
+    return changeRes;
+}

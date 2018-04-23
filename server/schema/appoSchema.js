@@ -9,7 +9,9 @@ const appoSchema = new Schema(
         appoTime: {type:Number},
         contactWay: {type:Number},
         receptionist: {type: String},
-        status:{type: String}
+        status:{type: String},
+        operater:{type:String},
+        operaTime:{type:Number}
     },
     {
         collection: 'appointment',

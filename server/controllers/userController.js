@@ -2,6 +2,7 @@ const userModel = require('../models/userModel');
 const util = require('../util');
 const exportConfig = require('../../config/exportConfig');
 const sendEmail = require('../mail')
+const sendSms = require('../sms')
 /**
  * 管理员登录
  * @param {*} ctx
@@ -312,6 +313,140 @@ exports.updateUserInfo = async (ctx, next) => {
             };
             exportConfig(ctx, 'error', returnObj);
         }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/**
+ * 新用户注册
+ * @param {*} ctx
+ * @param {*} next
+ */
+let registerCode = ''
+exports.newUserRegister = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let uidres = await userModel.queryUid();
+        if (body.phoneVerificationCode == registerCode) {
+            let userInfo = {
+                email: body.email,
+                uid: uidres.uid + 1,
+                password: body.password,
+                phone: body.phone
+            };
+            let changeRes = await userModel.newUserRegister(userInfo);
+            console.log(changeRes)
+            let returnObj = {
+                dbResult: changeRes,
+                ok: 1,
+            };
+            let Res = await userModel.changeUid(uidres._id);
+            exportConfig(ctx, 'success', returnObj);
+        } else {
+            let returnObj = {
+                dbResult: '验证码错误',
+                ok: 0,
+            };
+            exportConfig(ctx, 'error', returnObj);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/**
+ * 用户登录
+ * @param {*} ctx
+ * @param {*} next
+ */
+let loginCode = ''
+exports.usersLogin = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        if(body.loginType == '1') {
+            if (body.code == loginCode) {
+                let userInfo = {
+                    phone: body.phone,
+                    type:'2'
+                };
+                let loginRes = await userModel.usersLogin(userInfo)
+                if(loginRes) {
+                    let returnObj = {
+                        dbResult: loginRes,
+                        ok: 1,
+                    };
+                    exportConfig(ctx, 'success', returnObj);
+                } else {
+                    let returnObj = {
+                        dbResult: '登录失败',
+                        ok: 0,
+                    };
+                    exportConfig(ctx, 'error', returnObj);
+                }      
+            } else {
+                let returnObj = {
+                    dbResult: '验证码错误',
+                    ok: 0,
+                };
+                exportConfig(ctx, 'error', returnObj);
+            }
+        } else {
+            let userInfo = {
+                email: body.email,
+                password:body.password,
+                type: '1'
+            };
+            let loginRes = await userModel.usersLogin(userInfo)
+            if (loginRes) {
+                let returnObj = {
+                    dbResult: loginRes,
+                    ok: 1,
+                };
+                exportConfig(ctx, 'success', returnObj);
+            } else {
+                let returnObj = {
+                    dbResult: '登录失败',
+                    ok: 0,
+                };
+                exportConfig(ctx, 'error', returnObj);
+            }      
+        }
+        
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+};
+//发送验证码
+exports.sendSmsCode = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let code = ''
+        for (let i = 0; i <6; i++) {
+           if(i == 0) {
+               code += Math.floor(Math.random() * 9+1)
+           }  else {
+               code += Math.floor(Math.random() * 10)
+           }
+        }
+        if (body.type == 'register') {
+            sendSms(body.phone, 'SMS_132675083', code)
+            registerCode = code;
+            console.log(registerCode)
+            exportConfig(ctx, 'success', '发送成功');    
+        } else {
+            //sendSms(body.phone, 'SMS_133035239', code)
+            loginCode = code;
+            console.log(loginCode)
+            exportConfig(ctx, 'success', '发送成功');    
+        }
+        
         return next;
     } catch (error) {
         console.log(error);

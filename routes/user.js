@@ -39,7 +39,15 @@ router.get('/queryAllUsers', userController.queryAllUsers);
  */
 router.get('/updateUserType', userController.updateUserType);
 
+
 router.get('/updateUserInfo', userController.updateUserInfo)
+
+router.get('/newUserRegister', userController.newUserRegister);
+
+router.get('/usersLogin', userController.usersLogin)
+
+router.get('/sendSmsCode', userController.sendSmsCode);
+
 /**
  * 分页返回所有评论信息
  */
