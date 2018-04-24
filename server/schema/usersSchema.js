@@ -18,7 +18,7 @@ const tagsManagerSchema = new Schema(
         familyAddress: { type: String },
         familyPhone: { type: Number },
         idCardNum: { type: String },
-        phone:{type:String}
+        phone:{type:Number}
     },
     {
         collection: 'users',

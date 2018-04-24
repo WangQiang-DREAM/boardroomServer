@@ -347,9 +347,10 @@ exports.usersLogin = async param => {
     console.log(param)
     let loginResult = {};
     if (param.type == '1') {
-       loginResult = users.findOne({ 'email': param.email, 'password': param.password });
+       loginResult = await users.findOne({ 'email': param.email, 'password': param.password },`uid email avatar phone userType`);
     } else {
-        loginResult = users.findOne({ 'phone': param.phone});
+        loginResult = await users.findOne({ 'phone': parseInt(param.phone)},`uid email avatar phone userType`);
+        console.log(loginResult)
     }
     return loginResult;
 };
