@@ -236,7 +236,35 @@ exports.queryComments = async (ctx, next) => {
         console.log(error);
     }
 };
- 
+/**
+ * 新用户注册
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.addComments = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let commentsinfo = {
+            rate: body.rate,
+            content: body.content,
+            roomOrder: body.roomOrder,
+            name: body.name,
+            uid: body.uid,
+            email: body.email
+        }  
+        const addRes = userModel.addComments(commentsinfo)
+        if (addRes) {
+            exportConfig(ctx, 'success', addRes);
+        } else {
+            exportConfig(ctx, 'error', addRes);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+}; 
+
 /**
  * 变更用户类型
  * @param {*} ctx
@@ -441,7 +469,7 @@ exports.sendSmsCode = async (ctx, next) => {
             console.log(registerCode)
             exportConfig(ctx, 'success', '发送成功');    
         } else {
-            //sendSms(body.phone, 'SMS_133035239', code)
+            sendSms(body.phone, 'SMS_133035239', code)
             loginCode = code;
             console.log(loginCode)
             exportConfig(ctx, 'success', '发送成功');    

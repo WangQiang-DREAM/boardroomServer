@@ -245,8 +245,6 @@ exports.updateUserType = async param => {
  * 
  */
 exports.queryComments = async params => {
-    console.log(78)
-    console.log(params)
     const page = Number(params.pagination.current);
     const limit = Number(params.pagination.pageSize);
     let sort = {};
@@ -282,7 +280,28 @@ exports.queryComments = async params => {
     return commentsInfo;
 }
 
+/**
+ * 添加评论
+ * @param {*} param
+ */
 
+exports.addComments = async param => {
+    const newComments = new comments({
+        commentId:uuid(),
+        rate:param.rate,
+        content:param.content,
+        roomOrder:param.roomOrder,
+        createTime: Date.parse(new Date()),
+        status:1,
+        user:{
+            name:param.name,
+            uid:param.uid,
+            email:param.email
+        }
+    });
+    const saveRes = await newComments.save();
+    return saveRes;
+};
 
 /**
  * 变更用户信息
@@ -322,7 +341,7 @@ exports.newUserRegister = async param => {
         phone: param.phone,
         password: param.password,
         avatar: "http://localhost:8080/user/default.jpg",
-        name: null,
+        name: '1',
         registerTime: Date.parse(new Date()),
         checkInTime: null,
         sex: null,
@@ -347,9 +366,9 @@ exports.usersLogin = async param => {
     console.log(param)
     let loginResult = {};
     if (param.type == '1') {
-       loginResult = await users.findOne({ 'email': param.email, 'password': param.password },`uid email avatar phone userType`);
+       loginResult = await users.findOne({ 'email': param.email, 'password': param.password },`uid email avatar phone userType name`);
     } else {
-        loginResult = await users.findOne({ 'phone': parseInt(param.phone)},`uid email avatar phone userType`);
+        loginResult = await users.findOne({ 'phone': parseInt(param.phone)},`uid email avatar phone userType name`);
         console.log(loginResult)
     }
     return loginResult;

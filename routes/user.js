@@ -52,4 +52,7 @@ router.get('/sendSmsCode', userController.sendSmsCode);
  * 分页返回所有评论信息
  */
 router.get('/queryComments', userController.queryComments);
+
+//添加评论
+router.get('/addComments',userController.addComments)
 module.exports = router;

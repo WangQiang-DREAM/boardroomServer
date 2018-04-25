@@ -8,6 +8,10 @@ const commentsSchema = new Schema(
         content: { type: String },
         createTime: { type: Number },
         status: { type: String },
+        rate:{type:Number},
+        name:{type:String},
+        email:{type:String},
+        user:{type:Object}
     },
     {
         collection: 'comments',
