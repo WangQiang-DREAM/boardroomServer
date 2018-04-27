@@ -223,6 +223,14 @@ exports.queryAllUsers = async params => {
         return usersInfo;
 }
 
+/**
+ * 查询用户手机号是否被注册
+ * @param {*} phone
+ */
+exports.checkUserPhoneExist = async phone => {
+    const checkExist = await users.find({ 'phone': phone });
+    return checkExist;
+}
 
 /**
  * 变更用户类型

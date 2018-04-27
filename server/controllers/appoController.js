@@ -3,6 +3,7 @@ const util = require('../util');
 const readline = require('readline');
 const fs = require('fs');
 const appoModel = require('../models/appoModel')
+const userModel = require('../models/userModel');
 const exportConfig = require('../../config/exportConfig');
 const sendEmail = require('../mail')
 
@@ -44,6 +45,7 @@ exports.changeAppoStatus = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
+        console.log(body)
         let AppoInfo = {
             appoId: body.appoId,
             status: body.status,
@@ -82,3 +84,35 @@ exports.changeAppoStatus = async (ctx, next) => {
         console.log(error);
     }
 };
+
+/**
+ * 添加预约
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.addAppo = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let manager  = await userModel.queryUserName()
+        let i = Math.floor(Math.random() * 2)
+        let apposinfo = {
+            name: body.name,
+            uid: body.uid,
+            email: body.email,
+            appoTime: body.appoTime,
+            contactWay: body.phone,
+            receptionist: manager[i].name,
+            avatar: body.avatar,
+        }
+        const addRes = await appoModel.addAppo(apposinfo)
+        if (addRes) {
+            exportConfig(ctx, 'success', addRes);
+        } else {
+            exportConfig(ctx, 'error', addRes);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+}; 

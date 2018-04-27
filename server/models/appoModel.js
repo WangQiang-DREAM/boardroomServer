@@ -23,6 +23,7 @@ const returnAppoParams = `
     email
     operater
     operaTime
+    contactWay
 `
 /**
  * 根据搜索条件返回预约的所有信息
@@ -43,7 +44,7 @@ exports.queryAppoInfo = async params => {
         limit,
         sort,
     };
-    const searchParams = ['name', 'status','receptionist'];
+    const searchParams = ['name', 'status','receptionist','uid'];
     const searchRules = {};
     searchParams
         .map(param => {
@@ -76,18 +77,40 @@ exports.queryAppoInfo = async params => {
  */
 
 exports.changeAppoStatus = async params => {
-    console.log(params)
     let appoId = params.appoId;
     let status = params.status;
     const conditions = { appoId: appoId };
     const update = { $set: { status: status } };
     const options = { upsert: true };
     const changeStatusRes = await appo.update(conditions, update, options);
-    console.log(changeStatusRes)
     const changeNewAppo = await appo.findOne({ appoId: appoId })
     let result = {
         changeStatusRes: changeStatusRes,
         changeNewAppo: changeNewAppo
     }
     return result;
+};
+
+/**
+ * 添加预约
+ * @param {*} param
+ */
+
+exports.addAppo = async param => {
+    const newAppo = new appo({
+        appoId: uuid(),
+        name: param.name,
+        uid: param.uid,
+        email: param.email,
+        appoTime:param.appoTime,
+        contactWay: param.contactWay,
+        receptionist:param.receptionist,
+        avatar:param.avatar,
+        operater:null,
+        operaTime:null,
+        createTime: Date.parse(new Date()),
+        status: 0,
+    });
+    const saveRes = await newAppo.save();
+    return saveRes;
 };

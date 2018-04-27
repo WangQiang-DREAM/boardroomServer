@@ -20,7 +20,7 @@ smtpTransport = nodemailer.createTransport(smtpTransport({
  */
 module.exports = sendMail = (recipient, subject, html) =>{
     smtpTransport.sendMail({
-        from: '北京京康托老所<' + config.email.user + '>',
+        from: '吉林民众托老所<' + config.email.user + '>',
         to: recipient,
         subject: subject,
         html: '<div style="margin:0;padding:10px">'+html+'</div>'

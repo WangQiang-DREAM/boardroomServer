@@ -11,7 +11,9 @@ const appoSchema = new Schema(
         receptionist: {type: String},
         status:{type: String},
         operater:{type:String},
-        operaTime:{type:Number}
+        operaTime:{type:Number},
+        createTime:{type:Number},
+        email:{type:String}
     },
     {
         collection: 'appointment',

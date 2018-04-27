@@ -5,6 +5,9 @@ const appoController = require('../server/controllers/appoController');
 router.get('/queryAppoInfo', appoController.queryAppoInfo);
 
 // 修改预约状态
-router.get('/changeAppoStatus',appoController.changeAppoStatus)
+router.get('/changeAppoStatus',appoController.changeAppoStatus);
+
+//添加预约
+router.get('/addAppo',appoController.addAppo)
 
 module.exports = router;

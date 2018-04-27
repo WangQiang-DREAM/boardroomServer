@@ -237,7 +237,7 @@ exports.queryComments = async (ctx, next) => {
     }
 };
 /**
- * 新用户注册
+ * 添加评论
  * @param {*} ctx
  * @param {*} next
  */
@@ -253,7 +253,7 @@ exports.addComments = async (ctx, next) => {
             uid: body.uid,
             email: body.email
         }  
-        const addRes = userModel.addComments(commentsinfo)
+        const addRes = await userModel.addComments(commentsinfo)
         if (addRes) {
             exportConfig(ctx, 'success', addRes);
         } else {
@@ -357,22 +357,31 @@ exports.newUserRegister = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
+        console.log(body)
         let uidres = await userModel.queryUid();
         if (body.phoneVerificationCode == registerCode) {
-            let userInfo = {
-                email: body.email,
-                uid: uidres.uid + 1,
-                password: body.password,
-                phone: body.phone
-            };
-            let changeRes = await userModel.newUserRegister(userInfo);
-            console.log(changeRes)
-            let returnObj = {
-                dbResult: changeRes,
-                ok: 1,
-            };
-            let Res = await userModel.changeUid(uidres._id);
-            exportConfig(ctx, 'success', returnObj);
+            let checkUserPhone = await userModel.checkUserPhoneExist(parseInt(body.phone));
+            if (checkUserPhone.length != 0 ) {
+                let returnObj = {
+                    dbResult: '手机号已被注册',
+                    ok: 2,
+                };
+                exportConfig(ctx, 'error', returnObj);
+            } else {
+                let userInfo = {
+                    email: body.email,
+                    uid: uidres.uid + 1,
+                    password: body.password,
+                    phone: body.phone
+                };
+                let changeRes = await userModel.newUserRegister(userInfo);
+                let returnObj = {
+                    dbResult: changeRes,
+                    ok: 1,
+                };
+                let Res = await userModel.changeUid(uidres._id);
+                exportConfig(ctx, 'success', returnObj);
+            }
         } else {
             let returnObj = {
                 dbResult: '验证码错误',
@@ -464,7 +473,7 @@ exports.sendSmsCode = async (ctx, next) => {
            }
         }
         if (body.type == 'register') {
-            sendSms(body.phone, 'SMS_132675083', code)
+            //sendSms(body.phone, 'SMS_132675083', code)
             registerCode = code;
             console.log(registerCode)
             exportConfig(ctx, 'success', '发送成功');    
@@ -473,8 +482,7 @@ exports.sendSmsCode = async (ctx, next) => {
             loginCode = code;
             console.log(loginCode)
             exportConfig(ctx, 'success', '发送成功');    
-        }
-        
+        } 
         return next;
     } catch (error) {
         console.log(error);
