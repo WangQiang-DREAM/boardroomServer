@@ -22,6 +22,12 @@ const comments = userDb.model('comments', commentsSchema);
 const uidSchema = require('../schema/uidSchema');
 uidSchema.plugin(mongoosePaginate);
 const uid = userDb.model('uid', uidSchema);
+
+//连接operateLogs表
+const logsSchema = require('../schema/logsSchema');
+logsSchema.plugin(mongoosePaginate);
+const logs = userDb.model('logs', logsSchema);
+
 const returnUserParams = `
     uid
     username
@@ -399,3 +405,62 @@ exports.changeUid = async param => {
     const changeRes = await uid.update(conditions, update, options);
     return changeRes;
 }
+
+
+/**
+ * 查询预约操作日志
+ * @param {*} params
+ */
+exports.queryOperateLogs = async params => {
+    const page = Number(params.pagination.current);
+    const limit = Number(params.pagination.pageSize);
+    let sort = {};
+    if (params.sort && params.sort.key) {
+        sort = {
+            [params.sort.key]: params.sort.order == 'ascend' ? 1 : -1,
+        };
+    };
+    let logsParams = {
+        page,
+        limit,
+        sort,
+    };
+    const searchParams = ['uid','operateTime'];
+    const searchRules = {};
+    searchParams
+        .map(param => {
+            if (params.querys[param]) {
+                return {
+                    key: param,
+                    value: params.querys[param],
+                };
+            } else {
+                return null;
+            }
+        })
+        .forEach(data => {
+            if (data) {
+                searchRules[data.key] = data.value;
+            }
+        });
+    const logsInfo = await logs.paginate(searchRules, logsParams);
+    return logsInfo;
+};
+
+
+/**
+ * 添加操作日志
+ * @param {*} param
+ */
+exports.addLogs = async param => {
+    const newOperatelogs = new logs({
+        name: param.name,
+        uid: param.uid,
+        operator:param.operator,
+        operatorAvatar:param.operatorAvatar,
+        operateTime: Date.parse(new Date()),
+        status: param.status,   
+    });
+    const saveRes = await newOperatelogs.save();
+    return saveRes;
+};

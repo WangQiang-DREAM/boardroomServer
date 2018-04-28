@@ -54,5 +54,13 @@ router.get('/sendSmsCode', userController.sendSmsCode);
 router.get('/queryComments', userController.queryComments);
 
 //添加评论
-router.get('/addComments',userController.addComments)
+router.get('/addComments',userController.addComments);
+
+
+// 查询预约操作
+router.get('/queryOperateLogs',userController.queryOperateLogs)
+
+//新增预约操作
+router.get('/addLogs', userController.addLogs)
+
 module.exports = router;

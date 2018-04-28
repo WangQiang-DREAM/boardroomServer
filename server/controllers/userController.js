@@ -488,3 +488,63 @@ exports.sendSmsCode = async (ctx, next) => {
         console.log(error);
     }
 };
+
+
+/**
+ * 查询预约操作日志
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.queryOperateLogs = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let userInfo = await userModel.queryOperateLogs(body)
+        let user = {
+            docs: userInfo.docs,
+            pagination: {
+                total: userInfo.total,
+                pageSize: userInfo.limit,
+                current: userInfo.page,
+            },
+        };
+        if (userInfo.total) {
+            exportConfig(ctx, 'success', user);
+        } else {
+            exportConfig(ctx, 'error', user);
+        }
+        return next;
+    } catch (error) {
+        exportConfig(ctx, 'error', {});
+        console.log(error);
+    }
+};
+
+
+/**
+ * 添加操作日志
+ * @param {*} ctx
+ * @param {*} next
+ */
+exports.addLogs = async (ctx, next) => {
+    try {
+        let bodystring = ctx.request.query.body;
+        let body = util.parseJson(bodystring);
+        let logsinfo = {
+            name: body.name,
+            uid: body.uid,
+            operator:body.operator,
+            operatorAvatar:body.operatorAvatar,
+            status:body.status
+        }
+        const addRes = await userModel.addLogs(logsinfo)
+        if (addRes) {
+            exportConfig(ctx, 'success', addRes);
+        } else {
+            exportConfig(ctx, 'error', addRes);
+        }
+        return next;
+    } catch (error) {
+        console.log(error);
+    }
+}; 
