@@ -25,6 +25,7 @@ const returnRoomParams = `
     creator
     createTime
     image
+    area
 `;
 
 
@@ -152,6 +153,7 @@ exports.addRoomInfo = async param => {
         creator: param.creator,
         status: param.status,
         roomStatus: '0',
+        area: parseInt(param.area),
         roomId: uuid(),
         createTime: Date.parse(new Date()),
         userNum: 0,

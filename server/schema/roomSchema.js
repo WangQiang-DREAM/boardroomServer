@@ -12,7 +12,8 @@ const roomSchema = new Schema(
         status: { type: String},
         roomOrder:{type: Number},
         createTime: { type: Number },
-        image:{type: Object}
+        image:{type: Object},
+        area:{type:Number}
     },
     {
         collection: 'roomInfos',

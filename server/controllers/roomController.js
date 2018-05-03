@@ -78,7 +78,6 @@ exports.addRoomInfo = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
-        console.log(body)
         let checkExist = await roomModel.checkRoomExist(body.roomOrder);
         if (checkExist.length > 0) {
             exportConfig(ctx, 'roomExist', { code: 1, msg: '房间号已经存在,请重试!' });

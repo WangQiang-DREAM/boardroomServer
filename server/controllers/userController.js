@@ -2,7 +2,7 @@ const userModel = require('../models/userModel');
 const util = require('../util');
 const exportConfig = require('../../config/exportConfig');
 const sendEmail = require('../mail')
-const sendSms = require('../sms')
+const sendSMS = require('../sms')
 /**
  * 管理员登录
  * @param {*} ctx
@@ -473,12 +473,14 @@ exports.sendSmsCode = async (ctx, next) => {
            }
         }
         if (body.type == 'register') {
+            sendSMS.sendCode(body.phone, 'SMS_134080256', code)
             //sendSms(body.phone, 'SMS_132675083', code)
             registerCode = code;
             console.log(registerCode)
             exportConfig(ctx, 'success', '发送成功');    
         } else {
-            sendSms(body.phone, 'SMS_133035239', code)
+            //sendSms(body.phone, 'SMS_133035239', code)
+            sendSMS.sendCode(body.phone, 'SMS_133035239', code)
             loginCode = code;
             console.log(loginCode)
             exportConfig(ctx, 'success', '发送成功');    
