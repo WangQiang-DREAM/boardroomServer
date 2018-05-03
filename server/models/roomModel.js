@@ -151,7 +151,7 @@ exports.addRoomInfo = async param => {
         direction: param.direction,
         totalNum: param.totalNum,
         creator: param.creator,
-        status: param.status,
+        status: '1',
         roomStatus: '0',
         area: parseInt(param.area),
         roomId: uuid(),

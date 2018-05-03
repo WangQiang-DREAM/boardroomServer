@@ -24,6 +24,7 @@ const returnAppoParams = `
     operater
     operaTime
     contactWay
+    roomOrder
 `
 /**
  * 根据搜索条件返回预约的所有信息
@@ -106,6 +107,7 @@ exports.addAppo = async param => {
         contactWay: param.contactWay,
         receptionist:param.receptionist,
         avatar:param.avatar,
+        roomOrder:parseInt(param.roomOrder),
         operater:null,
         operaTime:null,
         createTime: Date.parse(new Date()),

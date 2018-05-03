@@ -113,6 +113,7 @@ exports.addAppo = async (ctx, next) => {
             contactWay: body.phone,
             receptionist: manager[i].name,
             avatar: body.avatar,
+            roomOrder:body.roomOrder,
         }
         const addRes = await appoModel.addAppo(apposinfo)
         if (addRes) {

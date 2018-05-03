@@ -13,7 +13,8 @@ const appoSchema = new Schema(
         operater:{type:String},
         operaTime:{type:Number},
         createTime:{type:Number},
-        email:{type:String}
+        email:{type:String},
+        roomOrder:{type:Number}
     },
     {
         collection: 'appointment',
