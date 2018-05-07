@@ -17,6 +17,7 @@ smtpTransport = nodemailer.createTransport(smtpTransport({
  * @param {String} recipient 收件人
  * @param {String} subject 发送的主题
  * @param {String} html 发送的html内容
+ * @description 邮件发送方法
  */
 module.exports = sendMail = (recipient, subject, html) =>{
     smtpTransport.sendMail({

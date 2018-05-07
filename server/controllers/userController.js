@@ -3,6 +3,7 @@ const util = require('../util');
 const exportConfig = require('../../config/exportConfig');
 const sendEmail = require('../mail')
 const sendSMS = require('../sms')
+const phoneCode = require('../phonecode');
 /**
  * 管理员登录
  * @param {*} ctx
@@ -276,7 +277,7 @@ exports.updateUserType = async (ctx, next) => {
         let body = util.parseJson(bodystring);
         let typeInfo = {
             uid: body.uid,
-            userType: body.userType,
+            userType: body.userType
         };
         let changeRes = await userModel.updateUserType(typeInfo);
         if (changeRes.ok === 1) {
@@ -352,13 +353,12 @@ exports.updateUserInfo = async (ctx, next) => {
  * @param {*} ctx
  * @param {*} next
  */
-let registerCode = ''
 exports.newUserRegister = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
-        console.log(body)
         let uidres = await userModel.queryUid();
+        let registerCode = phoneCode.getCode(body.phone);
         if (body.phoneVerificationCode == registerCode) {
             let checkUserPhone = await userModel.checkUserPhoneExist(parseInt(body.phone));
             if (checkUserPhone.length != 0 ) {
@@ -400,12 +400,12 @@ exports.newUserRegister = async (ctx, next) => {
  * @param {*} ctx
  * @param {*} next
  */
-let loginCode = ''
 exports.usersLogin = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
         if(body.loginType == '1') {
+            let loginCode = phoneCode.getCode(body.phone);
             if (body.code == loginCode) {
                 let userInfo = {
                     phone: body.phone,
@@ -452,37 +452,33 @@ exports.usersLogin = async (ctx, next) => {
                 };
                 exportConfig(ctx, 'error', returnObj);
             }      
-        }
-        
+        }  
         return next;
     } catch (error) {
         console.log(error);
     }
 };
-//发送验证码
+
+/**
+ * 发送手机验证码
+ * @param {*} ctx 
+ * @param {*} next 
+ */
 exports.sendSmsCode = async (ctx, next) => {
     try {
         let bodystring = ctx.request.query.body;
         let body = util.parseJson(bodystring);
-        let code = ''
-        for (let i = 0; i <6; i++) {
-           if(i == 0) {
-               code += Math.floor(Math.random() * 9+1)
-           }  else {
-               code += Math.floor(Math.random() * 10)
-           }
-        }
+        // 清空验证码缓存
+        phoneCode.deleteCode(body.phone);
+        // 设置验证码
+        phoneCode.setCode(body.phone);
+        // 获取验证码
+        let code = phoneCode.getCode(body.phone);
         if (body.type == 'register') {
             sendSMS.sendCode(body.phone, 'SMS_134080256', code)
-            //sendSms(body.phone, 'SMS_132675083', code)
-            registerCode = code;
-            console.log(registerCode)
             exportConfig(ctx, 'success', '发送成功');    
         } else {
-            //sendSms(body.phone, 'SMS_133035239', code)
             sendSMS.sendCode(body.phone, 'SMS_133035239', code)
-            loginCode = code;
-            console.log(loginCode)
             exportConfig(ctx, 'success', '发送成功');    
         } 
         return next;

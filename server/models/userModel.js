@@ -50,6 +50,7 @@ const returnUsersParams = `
         familyName
         familyPhone   
 `;
+
 /**
  * 注册
  * @param {*} email
@@ -143,8 +144,6 @@ exports.addManager = async (username,name, roles) => {
         password: '81dc9bdb52d04dc20036dbd8313ed055',
         roles: [roles],
     });
-    console.log(12)
-    console.log(newManager)
     const saveRes = await newManager.save();
     return saveRes;
 };
@@ -179,8 +178,8 @@ exports.updateManagerPassword = async managerInfo => {
 };
 
 /**
- * 查询用户
- * 
+ * 根据条件查询用户
+ * @param {*} params 
  */
 exports.queryAllUsers = async params => {
     const page = Number(params.pagination.current);
@@ -242,12 +241,11 @@ exports.checkUserPhoneExist = async phone => {
  * 变更用户类型
  * @param {*} param
  */
-
 exports.updateUserType = async param => {
     let uid = param.uid;
     let userType = param.userType;
     const conditions = { uid: uid };
-    const update = { $set: { userType: userType } };
+    const update = { $set: { userType: userType,roomOrder:null } };
     const options = { upsert: true };
     const changeRes = await users.update(conditions, update, options);
     return changeRes;
@@ -256,7 +254,7 @@ exports.updateUserType = async param => {
 
 /**
  * 查询评论
- * 
+ * @param {*} params 
  */
 exports.queryComments = async params => {
     const page = Number(params.pagination.current);
@@ -388,12 +386,19 @@ exports.usersLogin = async param => {
     return loginResult;
 };
 
-//查询uid
+/**
+ * 查询uid
+ * @param {*} param 
+ */
 exports.queryUid = async param => {
     const res = await uid.find()
     return res[0]
 }
-//更改uid
+
+/**
+ * 更改uid
+ * @param {*} param 
+ */
 exports.changeUid = async param => {
     const conditions = { _id: param };
     const update = {

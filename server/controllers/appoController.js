@@ -9,7 +9,6 @@ const exportConfig = require('../../config/exportConfig');
 const sendEmail = require('../mail');
 const sendSMS = require('../sms');
 const moment = require('moment');
-const phonecode = require('../phonecode');
 
 /**
  * 返回预约所有信息接口
@@ -64,15 +63,11 @@ exports.changeAppoStatus = async (ctx, next) => {
             exportConfig(ctx, 'changeRoomSuccess', returnObj);
             switch (emailStatus) {
                 case 'reject':
-                sendEmail(body.email, '预约结果', '很抱歉，您的预约已被拒绝，请再次预约！')
+                sendEmail(body.email, '预约结果', '很抱歉，您的预约已被拒绝，请再次预约！');
                 break;
                 case 'receive':
-                //sendEmail(body.email, '预约结果', '您的预约已成功，请及时前往！');
-                let date = new Date()
-                const h = date.getHours();
-                const m = date.getMinutes();
-                const time = h +'点'+ m + '分';
-                sendSMS.sendSms(body.phone, 'SMS_133155051',time);
+                sendEmail(body.email, '预约结果', '您的预约已成功，请及时前往！');
+                sendSMS.sendSms(body.phone, 'SMS_133155051');
                 break;
                 case 'checkin':
                 sendEmail(body.email, '入住通知', '您已成功入住' + body.roomOrder + '房间' + body.bedId + '号床')
