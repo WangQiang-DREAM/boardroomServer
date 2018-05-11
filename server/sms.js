@@ -26,9 +26,7 @@ module.exports.sendCode = (phone, TemplateCode, code) => {
             TemplateParam: '{"code":' + code + '}'
         })
         .then(function (res) {
-            let {
-                Code
-            } = res
+            let {Code} = res
             if (res.Code === 'OK') {
                 //处理返回参数
                 console.log(res)
@@ -56,9 +54,7 @@ module.exports.sendSms = (phone, TemplateCode) => {
             })
         })
         .then(function (res) {
-            let {
-                Code
-            } = res
+            let {Code} = res
             if (res.Code === 'OK') {
                 //处理返回参数
                 console.log(res)

@@ -140,7 +140,7 @@ exports.addManager = async (username,name, roles) => {
         uid: uuid(),
         username: username,
         name:name,
-        photo: 'http://localhost:8080/manager/avatar2.jpeg',
+        photo: 'http://123.207.164.37:3300/img/manager/avatar2.jpeg',
         password: '81dc9bdb52d04dc20036dbd8313ed055',
         roles: [roles],
     });
@@ -352,7 +352,7 @@ exports.newUserRegister = async param => {
         email: param.email,
         phone: param.phone,
         password: param.password,
-        avatar: "http://localhost:8080/user/default.jpg",
+        avatar: "http://123.207.164.37:3300/img/user/default.jpg",
         name: '1',
         registerTime: Date.parse(new Date()),
         checkInTime: null,

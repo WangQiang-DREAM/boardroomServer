@@ -96,10 +96,12 @@ exports.changeRoomPhoto = async (params,imgname) => {
     let img = []
     if (params.image.length > 1 ) {
         img = (params.image).split(',');
-        let newUrl = 'http://localhost:8080/house/' + imgname;
+        //let newUrl = 'http://localhost:3300/house/' + imgname;
+        let newUrl = 'http://123.207.164.37:3300/img/house/' + imgname;
         img.push(newUrl);
     } else {
-        let newUrl = 'http://localhost:8080/house/' + imgname;
+        //let newUrl = 'http://localhost:3300/house/' + imgname;
+        let newUrl = 'http://123.207.164.37:3300/img/house/' + imgname;
         img.push(newUrl);
     }
         

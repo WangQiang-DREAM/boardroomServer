@@ -38,7 +38,7 @@ phoneCode = function () {
 
 /**
  * @param
- * @description 随机获取验证码
+ * @description 随机获取6位验证码
  */
 getRandomCode = (code = '') => {
     for (let i = 0; i < 6; i++) {

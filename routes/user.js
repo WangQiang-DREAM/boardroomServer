@@ -39,13 +39,24 @@ router.get('/queryAllUsers', userController.queryAllUsers);
  */
 router.get('/updateUserType', userController.updateUserType);
 
-
+/**
+ * 更改用户信息
+ */
 router.get('/updateUserInfo', userController.updateUserInfo)
 
+/**
+ * 新用户注册
+ */
 router.get('/newUserRegister', userController.newUserRegister);
 
+/** 
+ * 用户登录
+*/
 router.get('/usersLogin', userController.usersLogin)
 
+/**
+ * 发送验证码
+ */
 router.get('/sendSmsCode', userController.sendSmsCode);
 
 /**
