@@ -238,6 +238,14 @@ exports.checkUserPhoneExist = async phone => {
 }
 
 /**
+ * 扫码登录
+ * @param {*} nickname 
+ */
+exports.wechatLogin = async nickname => {
+    const user = await users.findOne({'nickname':nickname});
+    return user
+}
+/**
  * 变更用户类型
  * @param {*} param
  */
