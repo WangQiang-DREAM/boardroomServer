@@ -13,7 +13,9 @@ const roomSchema = new Schema(
         roomOrder:{type: Number},
         createTime: { type: Number },
         image:{type: Object},
-        area:{type:Number}
+        area:{type:Number},
+        price:{type:String},
+        roomType:{type:String}
     },
     {
         collection: 'roomInfos',
