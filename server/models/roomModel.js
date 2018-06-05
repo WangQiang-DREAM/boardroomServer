@@ -26,6 +26,8 @@ const returnRoomParams = `
     createTime
     image
     area
+    price
+    roomType
 `;
 
 
@@ -48,15 +50,13 @@ exports.queryRoomInfo = async params => {
         limit,
         sort,
     };
-    const searchParams = ['roomOrder','direction', 'roomStatus', 'createTime','status'];
+    const searchParams = ['roomOrder','direction', 'roomStatus', 'createTime','status','price'];
     const searchRules = {};
     let starttime = '';
     let endtime = '';
     searchParams
         .map(param => {
             if (params.querys[param]) {
-                console.log(11)
-                console.log(params.querys[param])
                 return {
                     key: param,
                     value: params.querys[param],
@@ -151,6 +151,8 @@ exports.addRoomInfo = async param => {
         direction: param.direction,
         totalNum: param.totalNum,
         creator: param.creator,
+        price:param.price,
+        roomType:param.roomType,
         status: '1',
         roomStatus: '0',
         area: parseInt(param.area),

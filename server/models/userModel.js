@@ -48,7 +48,8 @@ const returnUsersParams = `
         userType
         familyAddress
         familyName
-        familyPhone   
+        familyPhone
+        idCardNum   
 `;
 
 /**
@@ -359,9 +360,9 @@ exports.newUserRegister = async param => {
         uid: param.uid,
         email: param.email,
         phone: param.phone,
-        password: param.password,
-        avatar: "http://123.207.164.37:3300/img/user/default.jpg",
-        name: '1',
+        password: param.password, 
+        avatar: "//123.207.164.37:3300/img/user/default.jpg",
+        name: null,
         registerTime: Date.parse(new Date()),
         checkInTime: null,
         sex: null,

@@ -9,4 +9,5 @@ router.get('/getScanCode', wechatController.sendScanCode)
 router.get('/confirmUser',wechatController.confirmUser)
 
 router.get('/getUserInfo', wechatController.getUserInfo)
+
 module.exports = router;
