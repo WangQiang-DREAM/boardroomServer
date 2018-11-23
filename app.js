@@ -9,7 +9,9 @@ const mount = require('mount-koa-routes');
 const cors = require('koa-cors');
 
 // 解决跨域问题
-app.use(cors());
+app.use(cors({
+    origin: "*",
+}))
 
 // error handler
 onerror(app)

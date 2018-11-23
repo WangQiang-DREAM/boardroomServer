@@ -1,26 +1,27 @@
 const { db: mongoose, Schema } = require('../dbconfig/mongoose');
 
-const roomSchema = new Schema(
-    {
-        roomId: { type: String },
-        creator: { type: String },
-        direction: { type: String },
-        roomStatus: { type: String },
-        userNum: { type: Number },
-        totalNum: { type: Number },
-        commentNum: { type: Number },
-        status: { type: String},
-        roomOrder:{type: Number},
-        createTime: { type: Number },
-        image:{type: Object},
-        area:{type:Number},
-        price:{type:String},
-        roomType:{type:String}
+const roomSchema = new Schema({
+    roomId: {
+        type: String
     },
-    {
-        collection: 'roomInfos',
-        versionKey: false,
+    roomName: {
+        type: String
+    },
+    roomFloor: {
+        type: Number
+    },
+    peopleNum: {
+        type: Number
+    },
+    status: {
+        type: String
+    },
+    equipment: {
+        type: Object
     }
-);
+}, {
+    collection: 'roomDetail',
+    versionKey: false,
+});
 
 module.exports = roomSchema;

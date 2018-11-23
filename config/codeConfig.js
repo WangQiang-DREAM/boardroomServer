@@ -15,6 +15,14 @@ const codeConfig = {
         code: 500,
         message: '修改失败',
     },
+    deleteAppoSuccess:{
+        code: 0,
+        message: '删除成功',
+    },
+    deleteAppoError: {
+        code: 0,
+        message: '删除失败',
+    },
     changeRoomStatusFail: {
         code: 0,
         message: '未找到该房间',
@@ -29,7 +37,7 @@ const codeConfig = {
     },
     noUser: {
         code: 405,
-        message: '未注册，请联系管理员',
+        message: '未注册，用户不存在',
     },
     exportSuccess: {
         code: 0,
@@ -55,17 +63,17 @@ const codeConfig = {
         code: 1,
         message: '查询用户失败',
     },
-    addManagerSuccess: {
+    addUserSuccess: {
         code: 0,
-        message: '增加管理员成功',
+        message: '注册用户成功',
     },
-    addManagerError: {
+    addUserError: {
         code: 500,
-        message: '增加管理员失败',
+        message: '注册用户失败',
     },
-    managerExist: {
+    userExist: {
         code: 0,
-        message: '管理员已经存在',
+        message: '用户已经存在',
     },
     roomExist: {
         code: 0,

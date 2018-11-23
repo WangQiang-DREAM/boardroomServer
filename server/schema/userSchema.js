@@ -1,18 +1,18 @@
 const { db: mongoose, Schema } = require('../dbconfig/mongoose');
 
-const tagsManagerSchema = new Schema(
+const userSchema = new Schema(
     {
         uid: { type: String },
-        username: { type: String },
-        photo: {type: String},
+        phone: {type: Number},
         name: {type: String},
+        department:{type:String},
         password: {type: String},
-        roles: { type: Object },
+        floor:{type:Number}
     },
     {
-        collection: 'manager',
+        collection: 'users',
         versionKey: false,
     }
 );
 
-module.exports = tagsManagerSchema;
+module.exports = userSchema;
