@@ -1,7 +1,7 @@
 const { db } = require('../dbconfig/mongoose');
 const roomDb = db.useDb('countroom');
 const mongoosePaginate = require('./paginate'); 
-
+const moment = require('moment')
 /**
  * 连接appointment表
  */
@@ -67,6 +67,49 @@ exports.queryAppoInfo = async params => {
 }
 
 /**
+ *  
+ */
+exports.queryAppoInfoDetail = async params =>{
+    let date = new Date().setHours(6, 0, 0, 0);
+    let alldata = [];
+    let appotime = "";
+    for (let i = 0; i < 7; i++) {
+        appotime = moment(date).format().substr(0, 10);
+        let result = await appo.find({
+            'roomId': params.roomId,
+            'date': {
+                $gte: appotime,
+                $lte: appotime
+            }
+        });
+        let day = {};
+        let daytime = [];
+        let uidobj = {};
+        if (result.length > 0) {
+            result.forEach(item => {
+                daytime = [...daytime, ...item.appoTime]
+                item.appoTime.forEach(ele => {
+                    uidobj[ele] = item.uid
+                })
+            });
+            day = {
+                date: result[0].date,
+                time: daytime,
+                uidobj: uidobj
+            };
+        } else {
+            day = {
+                date: moment(date).format().substr(0, 10),
+                time: [],
+                uidobj: {}
+            };
+        }
+        alldata.push(day);
+        date = date + 60 * 60 * 1000 * 24;
+    }
+    return alldata
+}
+/**
  * 添加会议室预约
  * @param {*} params 
  */
@@ -81,11 +124,64 @@ exports.addAppo = async params => {
         createTime: Date.parse(new Date),
         status: "0",
         date: params.date,
-        title: params.title
+        title: params.title,
     });
     const saveRes = await newAppo.save();
     return saveRes;
 }
+
+/**
+ * 判断预约是否冲突
+ * @param {*} params 
+ */
+exports.judgeAppoConflict = async params =>{
+    let conflictbyroom = [];
+    let conflictbyuser = [];
+    let timedata = params.time
+    for (let i = 0; i < timedata.length; i++) {
+        let res = await appo.find({
+            'date': timedata[i].date,
+            'appoTime': {$in:timedata[i].time}
+        });
+        if (res.length >0) {
+            res.forEach(item=>{
+                if (item.uid === params.uid) {
+                   conflictbyroom = [...conflictbyroom, ...res]
+                }
+                if (item.roomId === params.roomId) {
+                   conflictbyuser = [...conflictbyuser, ...res]
+                }
+            })
+        }
+    }
+    
+    if (conflictbyroom.length > 0 && conflictbyuser.length > 0) {
+        let returnData = {
+            type: 'all',
+            data: [...conflictbyroom, ...conflictbyuser]
+        }
+        return returnData
+    } else if (conflictbyroom.length > 0 && conflictbyuser.length === 0) {
+        let returnData = {
+            type: 'room',
+            data: conflictbyroom
+        }
+        return returnData
+    } else if (conflictbyroom.length === 0 && conflictbyuser.length > 0) {
+        let returnData = {
+            type: 'user',
+            data: conflictbyuser
+        }
+        return returnData
+    } else {
+        let returnData = {
+            type: 'success',
+            data: []
+        }
+        return returnData
+    }
+}
+
 
 /**
  * 删除会议室预约（修改预约状态）

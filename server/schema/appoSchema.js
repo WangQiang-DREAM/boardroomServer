@@ -33,6 +33,9 @@ const appoSchema = new Schema({
     },
     title:{
         type:String
+    },
+    color:{
+        type:String
     }
 }, {
     collection: 'appointment',

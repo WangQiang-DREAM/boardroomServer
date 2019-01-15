@@ -20,6 +20,7 @@ exports.userRegister = async params => {
         phone: params.phone,
         password: params.password,
         department: params.department,
+        email: params.email,
         floor: util.returnFloorByDep(params.department)
     });
     const saveRes = await newUser.save();

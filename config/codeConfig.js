@@ -91,6 +91,14 @@ const codeConfig = {
         code: 505,
         message: '密码错误',
     },
+    appoConflictSuccess: {
+         code: 0,
+         message: '空闲',
+    },
+     appoConflictError: {
+         code: 1,
+         message: '冲突',
+     }
     
 };
 

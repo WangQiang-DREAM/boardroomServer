@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="1a00e6c5-2e16-4446-83dc-773a65a32073" name="tecent" url="http://123.207.164.37">
-        <fileTransfer host="123.207.164.37" port="22" rootFolder="/usr/project/boardroomServer" accessType="SFTP">
+      <webServer id="dfbbe24f-a782-460f-8521-05b1fa7c960f" name="aliy" url="http://39.105.12.145">
+        <fileTransfer host="39.105.12.145" port="22" rootFolder="/usr/local/project/boardroomServer" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
           </advancedOptions>
