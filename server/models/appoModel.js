@@ -77,6 +77,7 @@ exports.queryAppoInfoDetail = async params =>{
         appotime = moment(date).format().substr(0, 10);
         let result = await appo.find({
             'roomId': params.roomId,
+            'status': '0',
             'date': {
                 $gte: appotime,
                 $lte: appotime
@@ -141,6 +142,7 @@ exports.judgeAppoConflict = async params =>{
     for (let i = 0; i < timedata.length; i++) {
         let res = await appo.find({
             'date': timedata[i].date,
+            'status': '0',
             'appoTime': {$in:timedata[i].time}
         });
         if (res.length >0) {
